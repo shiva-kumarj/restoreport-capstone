@@ -1,4 +1,4 @@
-*.json
+dataset
 *.csv
 yelp_postgres_db
 *.pdf
