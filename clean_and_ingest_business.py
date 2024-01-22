@@ -6,6 +6,7 @@ import logging
 import argparse
 from sqlalchemy import create_engine
 
+# pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
 def parse_args():
@@ -73,7 +74,7 @@ def ingest_into_db(df, args):
     port = int(args.port)
     db = args.db
     table_name = args.table_name
-
+    logging.info('Trying to establish connection with Db..')
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
     df.head(n=0).to_sql(name=f'{table_name}', con=engine, if_exists='replace')
     logging.info('Ingesting dataframe into Database...')
@@ -135,7 +136,7 @@ def parse_json_string(json_string, default):
             return k
     return default
 
-def clean_businesses_dataset(input_file, output_file):
+def clean_business_dataset(input_file):
     
     df = pd.read_json(input_file, encoding='utf-8', lines=True)
 
@@ -175,7 +176,8 @@ def clean_businesses_dataset(input_file, output_file):
     # assigning placeholder postal codes 
     df.loc[df['postal_code'].apply(lambda x: len(x)<5), 'postal_code'] = 99999
     # Convert to suitable dtype 
-    df['postal_code'] = df['postal_code'].astype('int')
+    # Bug
+    df.loc[:, 'postal_code'] = df['postal_code'].astype('int')
 
 
     # Hours
@@ -228,9 +230,15 @@ def clean_businesses_dataset(input_file, output_file):
     df.loc[:, binary_attributes] = df[binary_attributes].fillna(False)
 
     # correcting existing values in the dataframe
-    df.loc[:, binary_attributes] = df[binary_attributes].replace('None', False)
-    df.loc[:, binary_attributes] = df[binary_attributes].replace('True', True)
-    df.loc[:, binary_attributes] = df[binary_attributes].replace('False', False)
+    # df.loc[:, binary_attributes] = df[binary_attributes].replace('None', False)
+    # df.loc[:, binary_attributes] = df[binary_attributes].replace('True', True)
+    # df.loc[:, binary_attributes] = df[binary_attributes].replace('False', False)
+
+    for col in binary_attributes:
+        df.loc[df[col] == 'None', col] = False
+        df.loc[df[col] == 'True', col] = True
+        df.loc[df[col] == 'False', col] = False
+
 
     logging.info('Dropping redundant columns')
     # Dropping redundant columns
@@ -240,7 +248,7 @@ def clean_businesses_dataset(input_file, output_file):
                     'attributes.BestNights', 'attributes.Smoking', 'attributes.GoodForDancing', 'attributes.Corkage', 
                     'attributes.BYOB', 'attributes.AgesAllowed', 'attributes.BYOBCorkage', 'attributes.DietaryRestrictions',
                     'attributes.AcceptsInsurance', 'attributes.Open24Hours', 'attributes.RestaurantsCounterService', 
-                    'attributes.HairSpecializesIn', 'hours', 'attributes', 'categories', 'is_open']
+                    'attributes.HairSpecializesIn', 'hours', 'attributes', 'categories', 'is_open', 'address']
 
     df.drop(drop_columns, axis=1, inplace=True)
 
@@ -249,7 +257,8 @@ def clean_businesses_dataset(input_file, output_file):
     noise_levels = ['quiet', 'average', 'loud', 'very_loud']
 
     # Apply the cleaning function to the 'column_name' column
-    df['attributes.NoiseLevel'] = df['attributes.NoiseLevel'].apply(clean_category)
+    # bug
+    df.loc[:, 'attributes.NoiseLevel'] = df['attributes.NoiseLevel'].apply(clean_category)
 
     # Filling in missing values with random noise levels
     null_mask = df['attributes.NoiseLevel'].isnull()
@@ -287,15 +296,18 @@ def clean_businesses_dataset(input_file, output_file):
     # Ambience
     logging.info('Fixing \'Ambience\' ')
 
+    # bug
     df.loc[:, 'attributes.Ambience'] = df['attributes.Ambience'].apply(clean_category)
 
     # Define a default state for this column
     default_ambience_string = "{'romantic': False, 'intimate': False, 'classy': False, 'hipster': False, 'divey': False, 'touristy': False, 'trendy': False, 'upscale': False, 'casual': False}"
     # Imputing missing values
-    df['attributes.Ambience'].fillna(default_ambience_string, inplace=True)
+    # df['attributes.Ambience'].fillna(default_ambience_string, inplace=True)
+    df.loc[:, 'attributes.Ambience'] = df['attributes.Ambience'].fillna(default_ambience_string)
 
     # Fixing the values in the column
-    df['attributes.Ambience'] = df['attributes.Ambience'].apply(lambda x: parse_json_string(x, default='absent'))
+    # bug
+    df.loc[:, 'attributes.Ambience'] = df['attributes.Ambience'].apply(lambda x: parse_json_string(x, default='absent'))
 
     # BikeParking
     assert not df['attributes.BikeParking'].isnull().any(), "AssertionError: Null values found in the BikeParking column."
@@ -309,6 +321,7 @@ def clean_businesses_dataset(input_file, output_file):
     # BusinessParking
     logging.info('Fixing \'BusinessParking\' ')
 
+    # bug
     df.loc[:, 'attributes.BusinessParking'] = df['attributes.BusinessParking'].apply(clean_category)
 
     # No Parking dict map
@@ -317,7 +330,8 @@ def clean_businesses_dataset(input_file, output_file):
     # Filling the missing values with 'noparking'
     df.loc[:, 'attributes.BusinessParking'] = df['attributes.BusinessParking'].fillna(noparking_string)
 
-    df['attributes.BusinessParking'] = df['attributes.BusinessParking'].apply(lambda x: parse_json_string(x, default='noparking'))
+    # bug
+    df.loc[:, 'attributes.BusinessParking'] = df['attributes.BusinessParking'].apply(lambda x: parse_json_string(x, default='noparking'))
 
     # RestaurantsGoodForGroups
     assert not df['attributes.RestaurantsGoodForGroups'].isnull().any(), "AssertionError: Null values found in the RestaurantsGoodForGroups column."
@@ -328,22 +342,26 @@ def clean_businesses_dataset(input_file, output_file):
     # RestaurantsReservations
     assert not df['attributes.RestaurantsReservations'].isnull().any(), "AssertionError: Null values found in the RestaurantsReservations column."
     
+    assert not df.isnull().any().any(), "AssertionError: Null values found in the final cleaned dataframe."
+
     return df
   
 
 if __name__ == '__main__':
     args = parse_args()
-    input_file = r'D:\My-Projects\CAPSTONE\dataset\yelp_academic_dataset_business.json'
-    output_file = r'D:\My-Projects\CAPSTONE\cleaned_dataset\business.csv'
+    input_file = '/raw_data/yelp_academic_dataset_business.json'
+    output_file = '/cleaned_data/business.csv'
+    # input_file = r'D:\My-Projects\CAPSTONE\dataset\yelp_academic_dataset_business.json'
+    # output_file = r'D:\My-Projects\CAPSTONE\delete\business.csv'
     
-    cleaned_df = clean_businesses_dataset(input_file=input_file, output_file=output_file)
+    cleaned_df = clean_business_dataset(input_file=input_file)
 
     # Writing dataframe to file
     logging.info(f'Writing Clean file: {output_file}')
 
     assert not cleaned_df.isnull().any().any(), "AssertionError: Null values found in the final cleaned dataframe."
 
-    cleaned_df.to_csv(output_file, index=False)
+    cleaned_df.to_csv(output_file, index=False, encoding='utf-8')
 
     ingest_into_db(cleaned_df, args)
 

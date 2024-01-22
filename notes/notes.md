@@ -43,3 +43,22 @@ A combination of both approaches may work.
 2. Do memory intensive processing in database.
 
 
+#### Bird's eye view of the project
+
+1. Prefect for workflow orchestration.
+2. GCP(and it various services) for data lake(staging), data warehousing, data analysis.
+
+#### Project Approach
+1. Ingest data into Postgres db.
+   1. `Container1` hosts PostgresDB that will hold the cleaned and preprocessed data.
+   2. `Container2` hosts the PostgresAdmin that provides UI and admin control to access the db in `Container1`.
+   3. Both `Container1` and `Container2` are put into a shared Docker network (`docker network create`).
+   4. A python script (clean_and_ingest_business.py, more datasets yet to come) reads the data from "staging area"(host machine for now), cleans it and ingests it into `Container1`.
+   5. Dockerize the ingesion script (container must have access to the raw data)**(problem 1)**
+   **Solution Problem 1**: As of now the raw data is stages in the host machine, so the container with the ingesion script can access the raw data from host machine by volume mounting a directory between the host and container.
+   > docker run -v /path/on/host:/path/in/container your_image_name
+
+   
+   6. **When the container goes on cloud** I can leverage bind mounts to mount a directory from a cloud storage directly into the docker container.
+
+   7. **If my usecase contains multiple containers** use docker compose to define a multi-container environment. specify volume mounts and services in the docker-compose.yml file. 
