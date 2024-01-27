@@ -84,3 +84,6 @@ The single container approach certainly simpler, more resource efficient, and ea
    11. **If my usecase contains multiple containers** use docker compose to define a multi-container environment. specify volume mounts and services in the docker-compose.yml file. 
 
 #### Question
+
+
+#### Updates:
