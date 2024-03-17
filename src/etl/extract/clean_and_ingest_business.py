@@ -6,6 +6,7 @@ import logging
 import argparse
 from sqlalchemy import create_engine
 
+
 # pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
@@ -272,9 +273,9 @@ def clean_business_dataset(input_file):
         mean_closing = (
             df[not_null][day].apply(lambda x: int(x.split("-")[1].split(":")[1])).mean()
         )
-        df.loc[
-            df[day].isnull(), day
-        ] = f"{int(mean_opening)}:00 - {int(mean_closing)}:00"
+        df.loc[df[day].isnull(), day] = (
+            f"{int(mean_opening)}:00 - {int(mean_closing)}:00"
+        )
 
     # Attributes
     logging.info("Fixing 'Attributes' column")
@@ -478,15 +479,37 @@ def clean_business_dataset(input_file):
         not df.isnull().any().any()
     ), "AssertionError: Null values found in the final cleaned dataframe."
 
+    # Rename columns
+    df_rename_dict = {
+        "attributes.RestaurantsDelivery": "RestaurantsDelivery",
+        "attributes.WiFi": "WiFi",
+        "attributes.WheelchairAccessible": "WheelchairAccessible",
+        "attributes.RestaurantsTakeOut": "RestaurantsTakeOut",
+        "attributes.RestaurantsPriceRange2": "RestaurantsPriceRange",
+        "attributes.BusinessParking": "BusinessParking",
+        "attributes.OutdoorSeating": "OutdoorSeating",
+        "attributes.Alcohol": "Alcohol",
+        "attributes.RestaurantsReservations": "RestaurantsReservations",
+        "attributes.Ambience": "Ambience",
+        "attributes.BusinessAcceptsCreditCards": "BusinessAcceptsCreditCards",
+        "attributes.NoiseLevel": "NoiseLevel",
+        "attributes.HasTV": "HasTV",
+        "attributes.GoodForKids": "GoodForKids",
+        "attributes.BikeParking": "BikeParking",
+        "attributes.Caters": "Caters",
+        "attributes.RestaurantsGoodForGroups": "RestaurantsGoodForGroups",
+    }
+
+    df = df.rename(columns=df_rename_dict)
     return df
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
-    input_file = "/raw_data/yelp_academic_dataset_business.json"
-    output_file = "/cleaned_data/business.csv"
-    # input_file = r'D:\My-Projects\CAPSTONE\data\raw\yelp_academic_dataset_business.json'
-    # output_file = r'D:\My-Projects\CAPSTONE\data\processed\business.csv'
+    # input_file = "/raw_data/yelp_academic_dataset_business.json"
+    # output_file = "/cleaned_data/business.csv"
+    input_file = r"D:\My-Projects\stonecap\data\raw\yelp_academic_dataset_business.json"
+    output_file = r"D:\My-Projects\stonecap\data\processed\business.csv"
 
     cleaned_df = clean_business_dataset(input_file=input_file)
 
@@ -506,3 +529,7 @@ if __name__ == "__main__":
     ), "AssertionError: Ingesion into DB, did not write all records.."
 
     logging.info("Successfully exited.")
+
+
+if __name__ == "__main__":
+    main()
