@@ -2,3 +2,4 @@ data
 *.csv
 yelp_postgres_db
 *.pdf
+*.pkl
