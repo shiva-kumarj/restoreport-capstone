@@ -10,6 +10,8 @@ from sqlalchemy import create_engine
 # pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
+root_dir = r"D:\My-Projects\stonecap"
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -505,11 +507,17 @@ def clean_business_dataset(input_file):
 
 
 def main():
-    args = parse_args()
+    # args = parse_args()
     # input_file = "/raw_data/yelp_academic_dataset_business.json"
     # output_file = "/cleaned_data/business.csv"
-    input_file = r"D:\My-Projects\stonecap\data\raw\yelp_academic_dataset_business.json"
-    output_file = r"D:\My-Projects\stonecap\data\processed\business.csv"
+    # input_file = r"D:\My-Projects\stonecap\data\raw\yelp_academic_dataset_business.json"
+    input_file = os.path.join(
+        root_dir, "data", "raw", "yelp_academic_dataset_business.json"
+    )
+    # output_file = r"D:\My-Projects\stonecap\data\processed\business.csv"
+    output_file = os.path.join(
+        root_dir, "data", "processed", "business", "business.csv"
+    )
 
     cleaned_df = clean_business_dataset(input_file=input_file)
 
@@ -522,11 +530,11 @@ def main():
 
     cleaned_df.to_csv(output_file, index=False, encoding="utf-8")
 
-    ingest_into_db(cleaned_df, args)
+    # ingest_into_db(cleaned_df, args)
 
-    assert successfully_ingested(
-        cleaned_df, args
-    ), "AssertionError: Ingesion into DB, did not write all records.."
+    # assert successfully_ingested(
+    #     cleaned_df, args
+    # ), "AssertionError: Ingesion into DB, did not write all records.."
 
     logging.info("Successfully exited.")
 
