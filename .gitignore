@@ -4,3 +4,4 @@ yelp_postgres_db
 *.pdf
 *.pkl
 glove.6B
+logs
