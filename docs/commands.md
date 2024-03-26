@@ -53,7 +53,7 @@ dpage/pgadmin4
   > docker run -v D:\My-Projects\CAPSTONE\data\raw:/data yelp_ingest:v001
 
 10. Docker run command
-  > docker run -v D:\My-Projects\CAPSTONE\data\raw:/raw_data --network=capstone_default yelp_ingest:v001 --user=root --password=root --host=pgdatabase --port=5432 --db=yelp_db --table_name=business
+  > docker run -v D:\My-Projects\CAPSTONE\data\raw:/raw_data --network=stonecap_default yelp_ingest:v001 --user=root --password=root --host=pgdatabase --port=5432 --db=yelp_db --table_name=business
 
 
 

@@ -87,3 +87,16 @@ The single container approach certainly simpler, more resource efficient, and ea
 
 
 #### Updates:
+- [3/16]: Extract sentiment of full review text, not per sentence.
+- [3/16]: Ditched Stanza for sentiment analysis, and adopted TextBlob instead. Highest Priority is speed of processing.
+- [3/16]: Using pickle file to save checkpoints during review processing.
+- [3/16]: Adopted Huggingface transformers for review labelling instead of Llamafile or openAI LLM.
+- [3/16]: Separating data validation from data processing script. Better to first perform data cleaning and then validation after that.
+- [3/21]: Huggingface is also very slow for text classification. Building my own model instead.
+- [3/21]: Using GloVe's pretrained word embeddings for feature engineering input text.
+- [3/21]: Built simple ML model using BalancedRandomForestClassifier (vanilla). Not good training or testing accuracy but able to predict very low represented classes. Better than other traditional models.
+- [3/21]: Very fast prediction.
+- [3/25]: Sequence of code execution. clean_and_ingest_business.py -> full_review_processing_textblob.py -> validate_data ->   
+Resources:
+1. GloVe: Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. GloVe: Global Vectors for Word Representation. [pdf] [bib]
+
