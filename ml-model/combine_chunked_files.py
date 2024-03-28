@@ -1,4 +1,35 @@
-"""combine processed chunk files into one"""
+"""
+combine_chunked_files.py
+
+This script combines multiple CSV files present in a specified directory into a single CSV file.
+It reads the header row from the first input file and writes it to the output file, followed by
+all remaining rows from each input file.
+
+Usage:
+    python combine_chunked_files.py --input /path/to/input/directory
+
+The script expects the following command-line argument:
+    -i, --input: Path to the directory containing the input CSV files
+
+The combined CSV file will be written to a subdirectory named "combined_reviews" within the
+specified input directory, with the filename "combined_reviews.csv".
+
+Functions:
+    combine_csv_files(input_files, output_file):
+        Combines multiple CSV files into a single output file.
+        input_files: List of paths to the input CSV files.
+        output_file: Path to the output CSV file.
+
+    get_csv_filenames(directory):
+        Returns a list of CSV filenames present in the specified directory.
+        directory: Path to the directory.
+
+    parse_arguments():
+        Parses the command-line arguments and returns the input directory path.
+
+Example:
+    python combine_chunked_files.py --input /path/to/input/directory
+"""
 
 import os
 import csv
