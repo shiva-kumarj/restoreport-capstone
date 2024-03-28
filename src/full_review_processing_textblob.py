@@ -1,3 +1,49 @@
+"""
+full_review_processing_textblob.py
+
+This script processes a large dataset of Yelp reviews in chunks, performing data cleaning, sentiment analysis
+using TextBlob, and filtering for restaurant reviews. The processed reviews are saved as CSV files in the
+'processed_reviews_dir/sentiment_analysis' directory.
+
+The script performs the following steps:
+
+1. Reads the raw review data from a JSON file in chunks.
+2. Filters the reviews to only include those for restaurant businesses.
+3. Cleans the review text by removing special characters, converting to lowercase, and keeping only alphanumeric
+   characters and selected punctuation.
+4. Cleans the 'stars', 'useful', and 'date' columns by handling missing values and converting data types.
+5. Performs sentiment analysis on the cleaned review text using TextBlob.
+6. Saves the processed reviews as CSV files in the 'processed_reviews_dir/sentiment_analysis' directory.
+
+The script supports parallel processing using the ThreadPoolExecutor to speed up the processing of large datasets.
+It also includes a checkpoint mechanism to resume processing from the last completed chunk in case of interruptions.
+
+The required directory structure is as follows:
+
+root_dir/
+    data/
+        raw/
+            yelp_academic_dataset_review.json
+        processed/
+            business/
+                business.csv
+            reviews/
+                sentiment_analysis/
+    checkpoints/
+        review_processing_checkpoint.pkl
+    logs/
+        full_review_processing.log
+
+Usage:
+1. Ensure that the required files and directory structure are in place.
+2. Run the script: `python full_review_processing_textblob.py`
+
+The script will process the Yelp review data in chunks, perform data cleaning and sentiment analysis, and save
+the processed reviews as CSV files in the 'processed_reviews_dir/sentiment_analysis' directory.
+
+Note: The script logs its progress and any errors to the 'full_review_processing.log' file in the 'logs' directory.
+"""
+
 import pandas as pd
 import re
 import numpy as np
