@@ -2,6 +2,6 @@ data
 *.csv
 yelp_postgres_db
 *.pdf
-checkpoints
+*.pkl
 glove.6B
 logs
