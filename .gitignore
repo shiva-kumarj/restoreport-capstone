@@ -5,3 +5,4 @@ yelp_postgres_db
 *.pkl
 glove.6B
 logs
+presentation
