@@ -61,8 +61,8 @@ The single container approach certainly simpler, more resource efficient, and ea
 
 #### Bird's eye view of the project
 
-1. Prefect for workflow orchestration.
-2. GCP(and it various services) for data lake(staging), data warehousing, data analysis.
+1. Mage for workflow orchestration.
+2. GCP(and it various services) for data processing, data warehousing, data analysis.
 
 #### Project Approach
 1. Ingest data into Postgres db.
@@ -97,6 +97,7 @@ The single container approach certainly simpler, more resource efficient, and ea
 - [3/21]: Built simple ML model using BalancedRandomForestClassifier (vanilla). Not good training or testing accuracy but able to predict very low represented classes. Better than other traditional models.
 - [3/21]: Very fast prediction.
 - [3/25]: Sequence of code execution. clean_and_ingest_business.py -> full_review_processing_textblob.py -> validate_data ->   
+
 Resources:
 1. GloVe: Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. GloVe: Global Vectors for Word Representation. [pdf] [bib]
 
