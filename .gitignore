@@ -6,5 +6,5 @@ yelp_postgres_db
 glove.6B
 logs
 presentation
-notebooks
+# notebooks
 submission
