@@ -1,4 +1,4 @@
-# yelp-customer-satisfaction-dashboard
+# RestoReport: customer satisfaction dashboard
 
 This project aims to create a data analytics tool that can be used by business owners to understand their customers. Customer reviews can be used to create a better impact on businesses. This tool demonstrates the kind of analysis that can be performed on customer reviews. I am focussing on 101 businesses due to hardware limitations, but this can be very easily scaled to process much higher volume.
 
