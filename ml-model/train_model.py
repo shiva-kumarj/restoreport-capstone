@@ -77,17 +77,15 @@ if __name__ == "__main__":
     annotated_reviews_dir = os.path.join(
         processed_reviews_dir,
         "annotated_sample",
-        "combined_annotated_reviews",
-        "combined_annotated_reviews.csv",
+        "combined_reviews",
+        "combined_reviews.csv",
     )
 
     # Set model save path
-    model_path = os.path.join(
-        root_dir, "ml-model-building", "model", "brf_text_classifier.pkl"
-    )
+    model_path = os.path.join(root_dir, "ml-model", "model", "brf_text_classifier.pkl")
 
     # Load pretrained work embeddings
-    glove_file = r"D:\My-Projects\glove.6B\glove.6B.300d.txt"
+    glove_file = r"D:\My-Projects\stonecap\glove.6B\glove.6B.300d.txt"
     word_vectors = KeyedVectors.load_word2vec_format(glove_file, binary=False)
 
     # load your dataset into pandas
